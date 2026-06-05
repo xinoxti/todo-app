@@ -59,10 +59,16 @@ newCategoryInput.addEventListener('keypress', (e) => {
 categoryDropdown.addEventListener('change', (e) => {
     currentCategory = e.target.value || null;
     currentFilter = 'all';
-    filterBtns.forEach(b => {
-        b.classList.remove('active');
-        if (b.dataset.filter === 'all') b.classList.add('active');
+
+    filterBtns.forEach(btn => {
+        btn.classList.remove('active');
+
+        if (btn.dataset.filter === 'all') {
+            btn.classList.add('active');
+        }
     });
+
+    renderCategories();
     renderTasks();
     updateCategoryDisplay();
 });
@@ -124,39 +130,59 @@ function deleteCategory(categoryName) {
 
 function renderCategories() {
     categoriesList.innerHTML = '';
-    
+
     categories.forEach(category => {
         const btn = document.createElement('button');
+        btn.type = 'button';
         btn.className = `category-btn ${currentCategory === category ? 'active' : ''}`;
-        btn.innerHTML = `
-            ${category}
-            <span class="delete-category-icon" onclick="event.stopPropagation(); deleteCategory('${escapeHtml(category)}')" style="cursor:pointer;">X</span>
-        `;
+
+        const categoryName = document.createElement('span');
+        categoryName.textContent = category;
+
+        const deleteIcon = document.createElement('span');
+        deleteIcon.className = 'delete-category-icon';
+        deleteIcon.textContent = '×';
+        deleteIcon.title = `Supprimer ${category}`;
+
+        deleteIcon.addEventListener('click', (event) => {
+            event.stopPropagation();
+            deleteCategory(category);
+        });
+
+        btn.appendChild(categoryName);
+        btn.appendChild(deleteIcon);
+
         btn.addEventListener('click', () => {
             currentCategory = category;
             currentFilter = 'all';
-            filterBtns.forEach(b => {
-                b.classList.remove('active');
-                if (b.dataset.filter === 'all') b.classList.add('active');
+
+            filterBtns.forEach(filterBtn => {
+                filterBtn.classList.remove('active');
+
+                if (filterBtn.dataset.filter === 'all') {
+                    filterBtn.classList.add('active');
+                }
             });
+
             categoryDropdown.value = category;
             renderCategories();
             renderTasks();
             updateCategoryDisplay();
         });
+
         categoriesList.appendChild(btn);
     });
 
-    // Mettre à jour le dropdown
-    const currentValue = categoryDropdown.value;
-    categoryDropdown.innerHTML = '<option value="">Selectionnez une categorie</option>';
+    categoryDropdown.innerHTML = '<option value="">Sélectionnez une catégorie</option>';
+
     categories.forEach(category => {
         const option = document.createElement('option');
         option.value = category;
         option.textContent = category;
         categoryDropdown.appendChild(option);
     });
-    categoryDropdown.value = currentValue;
+
+    categoryDropdown.value = currentCategory || '';
 }
 
 function updateCategoryDisplay() {
