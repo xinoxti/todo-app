@@ -10,29 +10,61 @@
     <div class="container">
         <header>
             <h1>📝 Ma To-Do List</h1>
-            <p class="subtitle">Organisez vos tâches facilement</p>
+            <p class="subtitle">Organisez vos tâches avec catégories et priorités</p>
         </header>
 
-        <div class="input-section">
-            <input 
-                type="text" 
-                id="taskInput" 
-                class="task-input" 
-                placeholder="Ajouter une nouvelle tâche..."
-                autocomplete="off"
-            >
+        <div class="categories-section">
+            <div class="categories-header">
+                <h2>📂 Catégories</h2>
+                <button id="addCategoryBtn" class="add-category-btn">+ Ajouter</button>
+            </div>
+            <div class="categories-container">
+                <div id="categoriesList" class="categories-list"></div>
+                <div id="newCategoryForm" class="new-category-form" style="display: none;">
+                    <input type="text" id="newCategoryInput" placeholder="Nom de la catégorie..." autocomplete="off">
+                    <button id="saveCategoryBtn" class="save-btn">Créer</button>
+                    <button id="cancelCategoryBtn" class="cancel-btn">Annuler</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="global-stats">
+            <h3>📊 Statistiques globales</h3>
+            <div class="stats-content">
+                <span id="globalTaskCount">0 tâche</span>
+                <span id="globalCompletedCount">0 complétée</span>
+            </div>
+        </div>
+
+        <div class="category-selector">
+            <label for="categoryDropdown">Catégorie actuelle :</label>
+            <select id="categoryDropdown" class="category-dropdown">
+                <option value="">Sélectionnez une catégorie</option>
+            </select>
+        </div>
+
+        <div id="categoryStats" class="category-stats" style="display: none;">
+            <h3 id="categoryStatsTitle"></h3>
+            <div class="stats-content">
+                <span id="categoryTaskCount">0 tâche</span>
+                <span id="categoryCompletedCount">0 complétée</span>
+            </div>
+        </div>
+
+        <div class="input-section" id="inputSection" style="display: none;">
+            <input type="text" id="taskInput" class="task-input" placeholder="Ajouter une nouvelle tâche..." autocomplete="off">
+            <select id="prioritySelect" class="priority-select">
+                <option value="B">Priorité: B (Moyen)</option>
+                <option value="A">Priorité: A (Haut)</option>
+                <option value="C">Priorité: C (Bas)</option>
+            </select>
             <button id="addBtn" class="add-btn">Ajouter</button>
         </div>
 
-        <div class="filter-section">
+        <div class="filter-section" id="filterSection" style="display: none;">
             <button class="filter-btn active" data-filter="all">Toutes</button>
             <button class="filter-btn" data-filter="active">Actives</button>
             <button class="filter-btn" data-filter="completed">Complétées</button>
-        </div>
-
-        <div class="stats">
-            <span id="taskCount">0 tâche</span>
-            <span id="completedCount">0 complétée</span>
         </div>
 
         <ul id="taskList" class="task-list"></ul>
@@ -41,9 +73,10 @@
             <p>🎉 Aucune tâche! Vous êtes à jour!</p>
         </div>
 
-        <div class="action-section">
+        <div class="action-section" id="actionSection" style="display: none;">
             <button id="clearBtn" class="clear-btn">Supprimer les complétées</button>
             <button id="deleteAllBtn" class="delete-all-btn">Tout supprimer</button>
+            <button id="deleteCategoryBtn" class="delete-category-btn">Supprimer la catégorie</button>
         </div>
     </div>
 
