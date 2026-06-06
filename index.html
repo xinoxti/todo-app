@@ -1,84 +1,248 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To-Do List App</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'self'; form-action 'none';">
+    <meta name="description" content="Todo App multilingue avec catégories, priorités, tags, dates d'échéance, dashboard et minuteur Pomodoro.">
+    <title>Todo App</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>📝 Ma To-Do List</h1>
-            <p class="subtitle">Organisez vos tâches avec catégories et priorités</p>
-        </header>
-
-        <div class="categories-section">
-            <div class="categories-header">
-                <h2>📂 Catégories</h2>
-                <button id="addCategoryBtn" class="add-category-btn">+ Ajouter</button>
+    <main class="app-shell">
+        <section class="hero-card">
+            <div class="hero-content">
+                <p class="eyebrow" data-i18n="appLabel">Productivité</p>
+                <h1 data-i18n="title">Todo App</h1>
+                <p data-i18n="subtitle">Organisez vos tâches avec catégories, priorités, tags, échéances et Pomodoro.</p>
             </div>
-            <div class="categories-container">
-                <div id="categoriesList" class="categories-list"></div>
-                <div id="newCategoryForm" class="new-category-form" style="display: none;">
-                    <input type="text" id="newCategoryInput" placeholder="Nom de la catégorie..." autocomplete="off">
-                    <button id="saveCategoryBtn" class="save-btn">Créer</button>
-                    <button id="cancelCategoryBtn" class="cancel-btn">Annuler</button>
+
+            <div class="top-actions">
+                <button id="themeToggle" class="pill-btn" type="button" aria-label="Changer le thème">
+                    <span id="themeIcon">🌙</span>
+                    <span data-i18n="themeButton">Thème</span>
+                </button>
+
+                <label class="language-switcher" for="languageSelect">
+                    <span data-i18n="languageLabel">Langue</span>
+                    <select id="languageSelect" aria-label="Choisir la langue">
+                        <option value="fr">FR</option>
+                        <option value="en">EN</option>
+                        <option value="it">IT</option>
+                        <option value="de">DE</option>
+                        <option value="es">ES</option>
+                        <option value="pt">PT</option>
+                        <option value="pl">PL</option>
+                    </select>
+                </label>
+            </div>
+        </section>
+
+        <section class="dashboard-card">
+            <div class="section-title-row">
+                <div>
+                    <p class="section-kicker" data-i18n="dashboardKicker">Vue globale</p>
+                    <h2 data-i18n="dashboardTitle">Dashboard</h2>
                 </div>
             </div>
-        </div>
 
-        <div class="global-stats">
-            <h3>📊 Statistiques globales</h3>
-            <div class="stats-content">
-                <span id="globalTaskCount">0 tâche</span>
-                <span id="globalCompletedCount">0 complétée</span>
+            <div class="stats-grid">
+                <article class="stat-card accent-blue">
+                    <span class="stat-icon">📋</span>
+                    <div>
+                        <p data-i18n="totalTasks">Total</p>
+                        <strong id="totalTasksCount">0</strong>
+                    </div>
+                </article>
+                <article class="stat-card accent-orange">
+                    <span class="stat-icon">⚡</span>
+                    <div>
+                        <p data-i18n="activeTasks">Actives</p>
+                        <strong id="activeTasksCount">0</strong>
+                    </div>
+                </article>
+                <article class="stat-card accent-green">
+                    <span class="stat-icon">✅</span>
+                    <div>
+                        <p data-i18n="completedTasks">Terminées</p>
+                        <strong id="completedTasksCount">0</strong>
+                    </div>
+                </article>
+                <article class="stat-card accent-red">
+                    <span class="stat-icon">🚨</span>
+                    <div>
+                        <p data-i18n="overdue">En retard</p>
+                        <strong id="overdueTasksCount">0</strong>
+                    </div>
+                </article>
+                <article class="stat-card accent-purple">
+                    <span class="stat-icon">📅</span>
+                    <div>
+                        <p data-i18n="dueToday">Aujourd'hui</p>
+                        <strong id="todayTasksCount">0</strong>
+                    </div>
+                </article>
             </div>
-        </div>
 
-        <div class="category-selector">
-            <label for="categoryDropdown">Catégorie actuelle :</label>
-            <select id="categoryDropdown" class="category-dropdown">
-                <option value="">Sélectionnez une catégorie</option>
-            </select>
-        </div>
+            <div class="dashboard-details">
+                <article class="progress-panel">
+                    <div class="panel-header">
+                        <h3 data-i18n="progressTitle">Progression</h3>
+                        <span id="progressPercent">0%</span>
+                    </div>
+                    <div class="progress-track" aria-hidden="true">
+                        <div id="progressFill" class="progress-fill"></div>
+                    </div>
+                    <p id="progressText" class="muted-text">Aucune tâche pour le moment.</p>
+                </article>
 
-        <div id="categoryStats" class="category-stats" style="display: none;">
-            <h3 id="categoryStatsTitle"></h3>
-            <div class="stats-content">
-                <span id="categoryTaskCount">0 tâche</span>
-                <span id="categoryCompletedCount">0 complétée</span>
+                <article class="priority-panel">
+                    <h3 data-i18n="priorityTitle">Répartition des priorités</h3>
+                    <div class="priority-bars">
+                        <div class="priority-row">
+                            <span class="priority-dot priority-a">A</span>
+                            <div class="mini-track"><div id="priorityABar"></div></div>
+                            <strong id="priorityACount">0</strong>
+                        </div>
+                        <div class="priority-row">
+                            <span class="priority-dot priority-b">B</span>
+                            <div class="mini-track"><div id="priorityBBar"></div></div>
+                            <strong id="priorityBCount">0</strong>
+                        </div>
+                        <div class="priority-row">
+                            <span class="priority-dot priority-c">C</span>
+                            <div class="mini-track"><div id="priorityCBar"></div></div>
+                            <strong id="priorityCCount">0</strong>
+                        </div>
+                    </div>
+                </article>
             </div>
-        </div>
+        </section>
 
-        <div class="input-section" id="inputSection" style="display: none;">
-            <input type="text" id="taskInput" class="task-input" placeholder="Ajouter une nouvelle tâche..." autocomplete="off">
-            <select id="prioritySelect" class="priority-select">
-                <option value="B">Priorité: B (Moyen)</option>
-                <option value="A">Priorité: A (Haut)</option>
-                <option value="C">Priorité: C (Bas)</option>
-            </select>
-            <button id="addBtn" class="add-btn">Ajouter</button>
-        </div>
+        <section class="content-grid">
+            <aside class="side-panel">
+                <div class="section-title-row">
+                    <div>
+                        <p class="section-kicker" data-i18n="categoryKicker">Organisation</p>
+                        <h2 data-i18n="categoryTitle">Catégories</h2>
+                    </div>
+                    <button id="addCategoryBtn" class="small-primary-btn" type="button" data-i18n="addCategory">Ajouter</button>
+                </div>
 
-        <div class="filter-section" id="filterSection" style="display: none;">
-            <button class="filter-btn active" data-filter="all">Toutes</button>
-            <button class="filter-btn" data-filter="active">Actives</button>
-            <button class="filter-btn" data-filter="completed">Complétées</button>
-        </div>
+                <div id="newCategoryForm" class="new-category-form" hidden>
+                    <input type="text" id="newCategoryInput" data-i18n-placeholder="newCategoryPlaceholder" placeholder="Nom de la catégorie..." autocomplete="off" maxlength="60">
+                    <p class="input-hint" data-i18n="categoryExamples">Exemples : Personnel / Travail / Projets</p>
+                    <div class="form-actions">
+                        <button id="saveCategoryBtn" class="save-btn" type="button" data-i18n="create">Créer</button>
+                        <button id="cancelCategoryBtn" class="ghost-btn" type="button" data-i18n="cancel">Annuler</button>
+                    </div>
+                </div>
 
-        <ul id="taskList" class="task-list"></ul>
+                <div id="categoriesList" class="categories-list"></div>
 
-        <div class="empty-state" id="emptyState">
-            <p>🎉 Aucune tâche! Vous êtes à jour!</p>
-        </div>
+                <div class="category-selector">
+                    <label for="categoryDropdown" data-i18n="currentCategory">Catégorie actuelle</label>
+                    <select id="categoryDropdown" class="category-dropdown">
+                        <option value="" data-i18n="selectCategory">Sélectionnez une catégorie</option>
+                    </select>
+                </div>
 
-        <div class="action-section" id="actionSection" style="display: none;">
-            <button id="clearBtn" class="clear-btn">Supprimer les complétées</button>
-            <button id="deleteAllBtn" class="delete-all-btn">Tout supprimer</button>
-            <button id="deleteCategoryBtn" class="delete-category-btn">Supprimer la catégorie</button>
+                <div id="categoryStats" class="category-stats" hidden>
+                    <h3 id="categoryStatsTitle">Statistiques</h3>
+                    <p id="categoryStatsText" class="muted-text">0 tâche active • 0 terminée</p>
+                </div>
+            </aside>
+
+            <section class="tasks-panel">
+                <div class="section-title-row">
+                    <div>
+                        <p class="section-kicker" data-i18n="taskKicker">Liste de travail</p>
+                        <h2 data-i18n="inputTitle">Nouvelle tâche</h2>
+                    </div>
+                </div>
+
+                <div class="input-section" id="inputSection" hidden>
+                    <input type="text" id="taskInput" class="task-input" data-i18n-placeholder="taskPlaceholder" placeholder="Ajouter une nouvelle tâche..." autocomplete="off" maxlength="160">
+                    <label class="field-group">
+                        <span data-i18n="dueDateLabel">Échéance</span>
+                        <input type="date" id="dueDateInput" class="date-input">
+                    </label>
+                    <label class="field-group">
+                        <span data-i18n="dueTimeLabel">Heure</span>
+                        <select id="dueTimeInput" class="time-input">
+                            <option value="" data-i18n="noDueTime">Sans heure</option>
+                        </select>
+                    </label>
+                    <input type="text" id="tagsInput" class="tags-input" data-i18n-placeholder="tagsPlaceholder" placeholder="Tags : Personnel, Travail, Projets..." autocomplete="off" maxlength="120">
+                    <select id="prioritySelect" class="priority-select">
+                        <option value="B" data-i18n="priorityMedium">Priorité B - Moyenne</option>
+                        <option value="A" data-i18n="priorityHigh">Priorité A - Haute</option>
+                        <option value="C" data-i18n="priorityLow">Priorité C - Basse</option>
+                    </select>
+                    <button id="addBtn" class="add-btn" type="button" data-i18n="addTask">Ajouter</button>
+                </div>
+
+                <div class="filter-section" id="filterSection" hidden>
+                    <button class="filter-btn active" type="button" data-filter="all" data-i18n="all">Toutes</button>
+                    <button class="filter-btn" type="button" data-filter="active" data-i18n="active">Actives</button>
+                    <button class="filter-btn" type="button" data-filter="completed" data-i18n="completed">Terminées</button>
+                </div>
+
+                <ul id="taskList" class="task-list"></ul>
+
+                <div class="empty-state show" id="emptyState">
+                    <span>✨</span>
+                    <p id="emptyStateText" data-i18n="emptyNoCategory">Créez ou sélectionnez une catégorie pour commencer.</p>
+                </div>
+
+                <div class="action-section" id="actionSection" hidden>
+                    <button id="clearBtn" class="clear-btn" type="button" data-i18n="clearCompleted">Supprimer les terminées</button>
+                    <button id="deleteAllBtn" class="delete-all-btn" type="button" data-i18n="deleteAll">Tout supprimer</button>
+                    <button id="deleteCategoryBtn" class="delete-category-btn" type="button" data-i18n="deleteCategory">Supprimer la catégorie</button>
+                </div>
+            </section>
+        </section>
+
+        <section class="tools-grid">
+            <article class="tool-card">
+                <div>
+                    <p class="section-kicker" data-i18n="alertsKicker">Rappels</p>
+                    <h2 data-i18n="alertsTitle">Notifications</h2>
+                    <p class="muted-text" data-i18n="alertsHelp">Les alertes fonctionnent quand l'application est ouverte dans le navigateur.</p>
+                </div>
+                <button id="enableNotificationsBtn" class="pill-btn" type="button" data-i18n="enableAlerts">Activer les alertes</button>
+            </article>
+
+            <article class="tool-card pomodoro-card">
+                <div>
+                    <p class="section-kicker" data-i18n="pomodoroKicker">Concentration</p>
+                    <h2 data-i18n="pomodoroTitle">Pomodoro</h2>
+                    <p class="muted-text" data-i18n="pomodoroHelp">Travaillez 25 minutes sur une tâche puis prenez une pause.</p>
+                </div>
+                <div class="timer-display" id="timerDisplay">25:00</div>
+                <div class="timer-actions">
+                    <button id="startTimerBtn" class="small-primary-btn" type="button" data-i18n="start">Démarrer</button>
+                    <button id="pauseTimerBtn" class="ghost-btn" type="button" data-i18n="pause">Pause</button>
+                    <button id="resetTimerBtn" class="ghost-btn" type="button" data-i18n="reset">Reset</button>
+                </div>
+            </article>
+        </section>
+    </main>
+
+    <div id="priorityModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="priorityModalTitle">
+        <div class="modal-backdrop" data-close-modal></div>
+        <div class="modal-card">
+            <h2 id="priorityModalTitle" data-i18n="priorityModalTitle">Changer la priorité</h2>
+            <p data-i18n="priorityModalText">Cette tâche est en priorité B. Voulez-vous la rendre plus ou moins importante ?</p>
+            <div class="modal-actions">
+                <button id="priorityToA" class="priority-choice priority-a" type="button" data-priority-target="A" data-i18n="moreImportant">Plus important → A</button>
+                <button id="priorityToC" class="priority-choice priority-c" type="button" data-priority-target="C" data-i18n="lessImportant">Moins important → C</button>
+            </div>
+            <button id="closePriorityModal" class="ghost-btn full-width" type="button" data-i18n="close">Fermer</button>
         </div>
     </div>
+
+    <div id="toastContainer" class="toast-container" aria-live="polite"></div>
 
     <script src="app.js"></script>
 </body>
