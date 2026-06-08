@@ -133,14 +133,12 @@ select {
     margin-bottom: 14px;
     background: linear-gradient(135deg, #ffffff, #a5f3fc 35%, #f9a8d4 75%);
     -webkit-background-clip: text;
-    background-clip: text;
     color: transparent;
 }
 
 :root[data-theme="light"] .hero-content h1 {
     background: linear-gradient(135deg, #172033, #2563eb 45%, #db2777 82%);
     -webkit-background-clip: text;
-    background-clip: text;
     color: transparent;
 }
 
@@ -241,7 +239,6 @@ button:active {
 .task-input,
 .tags-input,
 .date-input,
-.time-input,
 .new-category-form input {
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid var(--border);
@@ -256,8 +253,7 @@ button:active {
 
 .language-switcher option,
 .category-dropdown option,
-.priority-select option,
-.time-input option {
+.priority-select option {
     background: var(--bg-soft);
     color: var(--text);
 }
@@ -463,7 +459,6 @@ button:active {
 .task-input,
 .tags-input,
 .date-input,
-.time-input,
 .priority-select {
     width: 100%;
     padding: 13px 14px;
@@ -474,18 +469,9 @@ button:active {
 .task-input:focus,
 .tags-input:focus,
 .date-input:focus,
-.time-input:focus,
 .priority-select:focus {
     border-color: rgba(6, 182, 212, 0.72);
     box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.13);
-}
-
-
-.input-hint {
-    margin-top: -4px;
-    color: var(--muted);
-    font-size: 0.82rem;
-    line-height: 1.35;
 }
 
 .categories-list {
@@ -559,7 +545,7 @@ button:active {
 
 .input-section {
     display: grid;
-    grid-template-columns: 1fr 160px 140px;
+    grid-template-columns: 1fr 170px;
     gap: 12px;
     margin-bottom: 18px;
 }
@@ -982,5 +968,307 @@ button:active {
 
     .stat-card {
         padding: 14px;
+    }
+}
+
+/* Auth + Supabase V3 */
+.auth-card {
+    border: 1px solid var(--border);
+    background: var(--card);
+    backdrop-filter: blur(20px);
+    box-shadow: var(--shadow);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    display: grid;
+    gap: 18px;
+}
+
+.auth-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 18px;
+}
+
+.storage-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 86px;
+    padding: 9px 14px;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 950;
+    letter-spacing: 0.03em;
+    border: 1px solid var(--border);
+}
+
+.storage-badge.guest {
+    color: #fde68a;
+    background: rgba(245, 158, 11, 0.16);
+}
+
+.storage-badge.cloud {
+    color: #bbf7d0;
+    background: rgba(34, 197, 94, 0.16);
+}
+
+.auth-forms {
+    display: grid;
+    grid-template-columns: minmax(180px, 1fr) minmax(180px, 1fr) auto;
+    gap: 12px;
+    align-items: end;
+}
+
+.auth-field {
+    display: grid;
+    gap: 8px;
+}
+
+.auth-field label,
+.field-hint {
+    color: var(--muted);
+    font-size: 0.86rem;
+    font-weight: 800;
+}
+
+.auth-buttons,
+.user-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.user-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.055);
+    border: 1px solid var(--border);
+}
+
+.welcome-text {
+    font-size: 1.15rem;
+    font-weight: 950;
+}
+
+button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.input-section {
+    grid-template-columns: minmax(220px, 1.7fr) minmax(145px, 0.8fr) minmax(125px, 0.7fr) minmax(180px, 1fr) minmax(170px, 0.9fr) auto;
+    align-items: end;
+}
+
+.date-input,
+.time-input,
+.auth-field input {
+    width: 100%;
+    min-height: 44px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.065);
+    color: var(--text);
+    padding: 11px 13px;
+    outline: none;
+}
+
+.date-input:focus,
+.time-input:focus,
+.auth-field input:focus {
+    border-color: rgba(6, 182, 212, 0.72);
+    box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.13);
+}
+
+.field-hint {
+    margin-top: -4px;
+    grid-column: 1 / -1;
+}
+
+.compact-field {
+    min-width: 110px;
+}
+
+@media (max-width: 980px) {
+    .auth-forms,
+    .input-section {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .auth-buttons,
+    .add-btn {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 640px) {
+    .auth-header,
+    .user-panel {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .auth-forms,
+    .input-section {
+        grid-template-columns: 1fr;
+    }
+
+    .auth-buttons > *,
+    .user-actions > * {
+        width: 100%;
+    }
+}
+
+
+/* Auth gate: première page login / inscription / invité */
+body.auth-gate {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+}
+
+body.auth-gate .app-shell {
+    width: min(860px, 100%);
+    min-height: calc(100vh - 48px);
+    align-content: center;
+}
+
+body.auth-gate .dashboard-card,
+body.auth-gate .content-grid,
+body.auth-gate .tools-grid {
+    display: none;
+}
+
+body.auth-gate .hero-card {
+    min-height: auto;
+}
+
+body.auth-gate .auth-card {
+    padding: 30px;
+}
+
+body.auth-gate .auth-forms {
+    grid-template-columns: 1fr;
+}
+
+body.auth-gate .auth-buttons {
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+body.auth-gate .auth-buttons button {
+    width: 100%;
+    justify-content: center;
+}
+
+body.auth-gate .user-panel {
+    display: none !important;
+}
+
+.danger-btn {
+    padding: 12px 18px;
+    border-radius: 999px;
+    background: rgba(239, 68, 68, 0.14);
+    color: #fecaca;
+    border: 1px solid rgba(239, 68, 68, 0.38);
+    font-weight: 900;
+    transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+}
+
+.danger-btn:hover {
+    background: rgba(239, 68, 68, 0.24);
+    border-color: rgba(239, 68, 68, 0.6);
+    transform: translateY(-1px);
+}
+
+.user-actions {
+    justify-content: flex-end;
+}
+
+@media (max-width: 640px) {
+    body.auth-gate {
+        padding: 14px;
+    }
+
+    body.auth-gate .app-shell {
+        min-height: calc(100vh - 28px);
+    }
+
+    body.auth-gate .hero-card,
+    body.auth-gate .auth-card {
+        padding: 22px;
+    }
+}
+
+
+/* Corrections UI échéance + heure */
+.tasks-panel,
+.input-section,
+.field-group {
+    overflow: visible;
+}
+
+.input-section {
+    grid-template-columns: minmax(260px, 2fr) minmax(170px, 0.9fr) minmax(155px, 0.8fr) minmax(230px, 1.2fr) minmax(180px, 0.9fr) auto;
+    column-gap: 16px;
+    row-gap: 14px;
+    align-items: end;
+}
+
+.due-date-field {
+    min-width: 170px;
+}
+
+.due-time-field {
+    min-width: 155px;
+}
+
+.date-input,
+.time-input {
+    min-width: 0;
+    width: 100%;
+}
+
+.time-input {
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.085);
+}
+
+.time-input option {
+    color: #111827;
+    background: #ffffff;
+}
+
+.time-input option:disabled {
+    color: #9ca3af;
+}
+
+@media (max-width: 1180px) {
+    .input-section {
+        grid-template-columns: minmax(240px, 1.5fr) minmax(160px, 0.8fr) minmax(150px, 0.8fr);
+    }
+
+    .tags-input,
+    .priority-select,
+    .add-btn {
+        grid-column: span 1;
+    }
+}
+
+@media (max-width: 760px) {
+    .input-section {
+        grid-template-columns: 1fr;
+    }
+
+    .due-date-field,
+    .due-time-field {
+        min-width: 0;
     }
 }
